@@ -20,12 +20,12 @@ namespace AlpaStock.Api.Controllers
         }
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost("create")]
-        public async Task<IActionResult> CreateBlogPost(AddContentReq req)
+        public async Task<IActionResult> CreateBlogPost(AddContentReq request)
         {
             var userid = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
 
 
-            var result = await _blogService.CreateBlogReq(req, userid);
+            var result = await _blogService.CreateBlogReq(request, userid);
 
             if (result.StatusCode == 200 || result.StatusCode == 201)
             {
