@@ -906,7 +906,13 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 }
                 var resultIncomeTTM = JsonConvert.DeserializeObject<List<IncomeStatementResp>>(makeRequestIncomeTTM.Content);
 
-
+                if (!resultIncomeTTM.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock IncomeTTM is empty" };
+                    return response;
+                }
 
                 var apiUrlIcomeNo = _baseUrl + $"stable/income-statement?symbol={symbol}&period={period}&limit=11";
                 var makeRequestIncomeNo = await _apiClient.GetAsync<string>(apiUrlIcomeNo);
@@ -921,7 +927,13 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     return response;
                 }
                 var resultIncomeNo = JsonConvert.DeserializeObject<List<IncomeStatementResp>>(makeRequestIncomeNo.Content);
-
+                if (!resultIncomeNo.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock income is empty" };
+                    return response;
+                }
 
                 var apiUrlCash = _baseUrl + $"stable/cash-flow-statement-ttm?symbol={symbol}&period={period}&limit=5";
                 var makeRequestCash = await _apiClient.GetAsync<string>(apiUrlCash);
@@ -938,6 +950,13 @@ namespace AlpaStock.Infrastructure.Service.Implementation
 
 
                 var resultCashTTM = JsonConvert.DeserializeObject<List<CashFlowStatement>>(makeRequestCash.Content);
+                if (!resultCashTTM.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock cash flow ttm is empty" };
+                    return response;
+                }
 
                 var apiUrlCashNO = _baseUrl + $"stable/cash-flow-statement?symbol={symbol}&period={period}&limit=11";
                 var makeRequestCashNo = await _apiClient.GetAsync<string>(apiUrlCashNO);
@@ -954,8 +973,15 @@ namespace AlpaStock.Infrastructure.Service.Implementation
 
 
                 var resultCashNo = JsonConvert.DeserializeObject<List<CashFlowStatement>>(makeRequestCashNo.Content);
+                if (!resultCashNo.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock cash flow is empty" };
+                    return response;
+                }
 
-                var apiUrlGrowth = _baseUrl + $"stable/income-statement-growth?symbol={symbol}&period={period}&limit=10";
+            /*    var apiUrlGrowth = _baseUrl + $"stable/income-statement-growth?symbol={symbol}&period={period}&limit=10";
                 var makeGrowthRequest = await _apiClient.GetAsync<string>(apiUrlGrowth);
                 if (!makeGrowthRequest.IsSuccessful)
                 {
@@ -967,8 +993,8 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.ErrorMessages = new List<string>() { "Unable to get the stock cash flow statement" };
                     return response;
                 }
-                var resultGrowth = JsonConvert.DeserializeObject<List<FinancialGrowth>>(makeGrowthRequest.Content);
-
+                var resultGrowth = JsonConvert.DeserializeObject<List<FinancialGrowth>>(makeGrowthRequest.Content);*/
+               
 
                 var getStockAnalyzer = await StockAnalyserRequest(symbol, period);
                 if (getStockAnalyzer.StatusCode != 200)
@@ -1184,9 +1210,10 @@ namespace AlpaStock.Infrastructure.Service.Implementation
 
                 var fcfMargins = new List<double>();
                 var roics = new List<double>();
-                int count = Math.Min(Math.Min(resultIncome.Count, resultBalance.Count), resultCash.Count);
+                var initialCount = Math.Min(resultIncome.Count, resultBalance.Count);
+                int count = Math.Min(initialCount, resultCash.Count);
 
-                for (int i = 0; i < resultIncome.Count && i < 10; i++)
+                for (int i = 0; i < count && i < 10; i++)
                 {
                     var fcf = CalculateFCF((long)resultCash[i].OperatingCashFlow, (long)resultCash[i].CapitalExpenditure);
                     var fcfMargin = CalculateFCFMargin(fcf, (double)resultIncome[i].Revenue);
