@@ -118,7 +118,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     SubscrptionStart = DateTime.UtcNow,
                     SubscrptionEnd = DateTime.UtcNow.AddDays(7),
                 });
-
+                await _userSubRepo.SaveChanges();
                 response.StatusCode = StatusCodes.Status200OK;
                 response.DisplayMessage = "Successful";
                 response.Result = "User successfully created";
