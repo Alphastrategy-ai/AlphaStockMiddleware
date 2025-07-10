@@ -311,6 +311,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 }
 
                 var getUserRole = await _accountRepo.GetUserRoles(checkUserExist);
+                await _userSubRepo.SaveChanges();
                 response.StatusCode = StatusCodes.Status200OK;
                 response.DisplayMessage = "Successfully login";
                 response.Result = new LoginResultDto() { Jwt = generateToken, UserRole = getUserRole };
