@@ -199,7 +199,7 @@ namespace AlpaStock.Api.Controllers
                 return BadRequest(result);
             }
         }
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+       [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("income-statement")]
         public async Task<IActionResult> GetStockIncomeStatement(string symbol, string period, string duration)
         {
@@ -278,7 +278,7 @@ namespace AlpaStock.Api.Controllers
         [HttpGet("cash-flow")]
         public async Task<IActionResult> GetStockCashFlowStatement(string symbol, string period, string duration)
         {
-            var result = await _stockService.GetStockCashFlowStatement(symbol, period, duration);
+            var result = await _stockService.GetStockCashFlowStatement2(symbol, period, duration);
 
             if (result.StatusCode == 200 || result.StatusCode == 201)
             {
@@ -313,7 +313,7 @@ namespace AlpaStock.Api.Controllers
             }
         }
 
-       //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+       [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("fundamental-metric")]
         public async Task<IActionResult> FundamentalMetricDatas(string symbol, string period)
         {

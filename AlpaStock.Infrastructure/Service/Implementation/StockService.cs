@@ -304,9 +304,23 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.ErrorMessages = new List<string>() { "Stock Income statement is empty" };
                     return response;
                 }
+                var apiUrlIcome2 = _baseUrl + $"stable/income-statement-ttm?symbol={symbol}&period={period}&limit=1";
+                var makeRequestIncome2 = await _apiClient.GetAsync<string>(apiUrlIcome2);
+                if (!makeRequestIncome2.IsSuccessful)
+                {
+                    _logger.LogError("stock income statement error mess", makeRequestIncome2.ErrorMessage);
+                    _logger.LogError("stock income statement error ex", makeRequestIncome2.ErrorException);
+                    _logger.LogError("stock income statement error con", makeRequestIncome2.Content);
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Unable to get the stock Income statement" };
+                    return response;
+                }
+                var resultIncome2 = JsonConvert.DeserializeObject<List<IncomeStatementResp>>(makeRequestIncome2.Content);
+                resultIncome2.AddRange(resultIncome);
                 response.StatusCode = 200;
                 response.DisplayMessage = "Success";
-                response.Result = resultIncome;
+                response.Result = resultIncome2;
                 return response;
 
             }
@@ -382,9 +396,31 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.ErrorMessages = new List<string>() { "Stock balance sheet statement is empty" };
                     return response;
                 }
+
+                var apiUrlBalance2 = _baseUrl + $"stable/balance-sheet-statement-ttm?symbol={symbol}&period={period}&limit=1";
+                var makeRequestBalance2 = await _apiClient.GetAsync<string>(apiUrlBalance2);
+                if (!makeRequestBalance2.IsSuccessful)
+                {
+                    _logger.LogError("stock balance-sheet-statement error mess", makeRequestBalance2.ErrorMessage);
+                    _logger.LogError("stock balance-sheet-statement error ex", makeRequestBalance2.ErrorException);
+                    _logger.LogError("stock balance-sheet-statement error con", makeRequestBalance2.Content);
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Unable to get the stock balance sheet statement" };
+                    return response;
+                }
+                var resultBalance2 = JsonConvert.DeserializeObject<List<BalanceSheetResp>>(makeRequestBalance2.Content);
+                if (!resultBalance2.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock balance sheet statement is empty" };
+                    return response;
+                }
+                resultBalance2.AddRange(resultBalance);
                 response.StatusCode = 200;
                 response.DisplayMessage = "Success";
-                response.Result = resultBalance;
+                response.Result = resultBalance2;
                 return response;
 
             }
@@ -464,9 +500,74 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.ErrorMessages = new List<string>() { "Stock cash flow statement is empty" };
                     return response;
                 }
+                
+
                 response.StatusCode = 200;
                 response.DisplayMessage = "Success";
                 response.Result = resultCash;
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"cash-flow-statement ex - {ex.Message}", ex);
+                response.ErrorMessages = new List<string> { "Unable to get the stock cash flow statement at the moment" };
+                response.StatusCode = 500;
+                response.DisplayMessage = "Error";
+                return response;
+            }
+        }
+        public async Task<ResponseDto<List<CashFlowStatement>>> GetStockCashFlowStatement2(string symbol, string period, string duration)
+        {
+            var response = new ResponseDto<List<CashFlowStatement>>();
+            try
+            {
+
+                var apiUrlCash = _baseUrl + $"stable/cash-flow-statement?symbol={symbol}&period={period}&limit={duration}";
+                var makeRequestCash = await _apiClient.GetAsync<string>(apiUrlCash);
+                if (!makeRequestCash.IsSuccessful)
+                {
+                    _logger.LogError("stock cash-flow-statement error mess", makeRequestCash.ErrorMessage);
+                    _logger.LogError("stock cash-flow-statement error ex", makeRequestCash.ErrorException);
+                    _logger.LogError("stock cash-flow-statement error con", makeRequestCash.Content);
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Unable to get the stock cash flow statement" };
+                    return response;
+                }
+                var resultCash = JsonConvert.DeserializeObject<List<CashFlowStatement>>(makeRequestCash.Content);
+                if (!resultCash.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock cash flow statement is empty" };
+                    return response;
+                }
+                var apiUrlCash2 = _baseUrl + $"stable/cash-flow-statement-ttm?symbol={symbol}&period={period}&limit=1";
+                var makeRequestCash2 = await _apiClient.GetAsync<string>(apiUrlCash2);
+                if (!makeRequestCash.IsSuccessful)
+                {
+                    _logger.LogError("stock cash-flow-statement error mess", makeRequestCash2.ErrorMessage);
+                    _logger.LogError("stock cash-flow-statement error ex", makeRequestCash2.ErrorException);
+                    _logger.LogError("stock cash-flow-statement error con", makeRequestCash2.Content);
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Unable to get the stock cash flow statement" };
+                    return response;
+                }
+                var resultCash2 = JsonConvert.DeserializeObject<List<CashFlowStatement>>(makeRequestCash2.Content);
+                if (!resultCash2.Any())
+                {
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    response.ErrorMessages = new List<string>() { "Stock cash flow statement is empty" };
+                    return response;
+                }
+                resultCash2.AddRange(resultCash);
+
+                response.StatusCode = 200;
+                response.DisplayMessage = "Success";
+                response.Result = resultCash2;
                 return response;
 
             }
