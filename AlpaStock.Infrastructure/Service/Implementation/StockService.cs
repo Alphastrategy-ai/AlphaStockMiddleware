@@ -1489,10 +1489,11 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     isActive = Compare("22", (double)avgPe, ">")
                 });
                 var diffIncome = resultIncome[0].NetIncome - resultIncome[4].NetIncome;
+                var percentIncome = (diffIncome/ resultIncome[0].NetIncome) *100;
                 resp.Add(new Alpha8PillerResp()
                 {
                     header = "Net Income Growth (5 yr)",
-                    amount = FormatNumber((double)diffIncome),
+                    amount = FormatNumber((double)percentIncome) + "%",
                     isActive = Compare(resultIncome[0].NetIncome.ToString(), (double)resultIncome[4].NetIncome, ">")
                 });
                 var getStockAnalyzer = await StockAnalyserRequest(symbol, period);
@@ -1511,10 +1512,11 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     isActive = Compare2(getStockAnalyzer.Result.ROIC.Fifth, "10%", ">")
                 });
                 var difReveG = resultIncome[0].Revenue - resultIncome[4].Revenue;
+                var perRevG = (difReveG / resultIncome[0].Revenue) * 100;
                 resp.Add(new Alpha8PillerResp()
                 {
                     header = "Revenue Growth (5 yr)",
-                    amount =FormatNumber((double)difReveG),
+                    amount =FormatNumber((double)perRevG)+"%",
                     isActive = Compare2(resultIncome[0].Revenue.ToString(), resultIncome[4].Revenue.ToString(), ">")
                 });
 
@@ -1585,10 +1587,11 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     isActive = Compare(ltl.ToString(), 5, "<")
                 });
                 var diffFCF = cashflow.Result[0].FreeCashFlow -  cashflow.Result[4].FreeCashFlow;
+                var perFCf = (diffFCF / cashflow.Result[0].FreeCashFlow) * 100;
                 resp.Add(new Alpha8PillerResp()
                 {
                     header = "FCF Growth (5 yr)",
-                    amount = FormatNumber((double)diffFCF),
+                    amount = FormatNumber((double)perFCf)+"%",
                     isActive = Compare(cashflow.Result[0].FreeCashFlow.ToString(), (double)cashflow.Result[4].FreeCashFlow, ">")
                 });
 
