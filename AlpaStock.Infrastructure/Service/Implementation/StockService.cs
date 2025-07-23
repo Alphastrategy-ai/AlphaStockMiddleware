@@ -1533,7 +1533,9 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     return response;
                 }
                 var resultIncome2 = JsonConvert.DeserializeObject<List<IncomeStatementResp>>(makeRequestIncome2.Content);
-                var weighted = ((resultIncome[4].WeightedAverageShsOutDil - resultIncome[0].WeightedAverageShsOutDil)/ resultIncome[4].WeightedAverageShsOutDil) * 100;
+                var lastCal = (resultIncome[4].WeightedAverageShsOutDil - resultIncome[0].WeightedAverageShsOutDil);
+                double divide = ((double)lastCal / (double)resultIncome[4].WeightedAverageShsOutDil);
+                double weighted = divide * 100;
                 resp.Add(new Alpha8PillerResp()
                 {
                     header = "Shares Outstanding Decrease (5 yr)",
