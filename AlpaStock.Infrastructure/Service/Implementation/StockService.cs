@@ -1082,19 +1082,6 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     return response;
                 }
 
-            /*    var apiUrlGrowth = _baseUrl + $"stable/income-statement-growth?symbol={symbol}&period={period}&limit=10";
-                var makeGrowthRequest = await _apiClient.GetAsync<string>(apiUrlGrowth);
-                if (!makeGrowthRequest.IsSuccessful)
-                {
-                    _logger.LogError("stock income-growth error mess", makeRequestCash.ErrorMessage);
-                    _logger.LogError("stock income-growth error ex", makeRequestCash.ErrorException);
-                    _logger.LogError("stock  income-growth error con", makeRequestCash.Content);
-                    response.StatusCode = 400;
-                    response.DisplayMessage = "Error";
-                    response.ErrorMessages = new List<string>() { "Unable to get the stock cash flow statement" };
-                    return response;
-                }
-                var resultGrowth = JsonConvert.DeserializeObject<List<FinancialGrowth>>(makeGrowthRequest.Content);*/
                
 
                 var getStockAnalyzer = await StockAnalyserRequest(symbol, period);
@@ -1134,13 +1121,13 @@ namespace AlpaStock.Infrastructure.Service.Implementation
 
                 var pt = (marketCap / resultIncomeTTM[0].NetIncome);
                 metricFirst.PToERatioTTM = $"{pt:F2}";
-                //resultRatioTTM[0].PriceToEarningsRatioTTM.ToString();
+               
                 var ps = marketCap / resultIncomeTTM[0].Revenue;
                 metricFirst.PSRatioTTM = $"{ps:F2}";
 
                 metricFirst.GrossProfitMarginTTM = ((resultIncomeTTM[0].Revenue - resultIncomeTTM[0].CostOfRevenue)
                     / resultIncomeTTM[0].Revenue).ToString() + "%";
-                //resultRatioTTM[0].GrossProfitMarginTTM.ToString() + "%";
+               
 
                 metricSecond.FreeCashFlow = resultCashTTM[0].FreeCashFlow.ToString();
                 if (!(resultCashNo.Count < 5))
@@ -1157,8 +1144,10 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 metricSecond.EVToNet = (result[0].EnterpriseValue / resultIncomeTTM[0].NetIncome).ToString();
 
                 metricSecond.EVToFCF = (result[0].EnterpriseValue / resultCashTTM[0].FreeCashFlow).ToString();
-                metricSecond.DividendsYieldTTM = (resultCashTTM[0].CommonDividendsPaid / marketCap).ToString() + "%";
-                metricSecond.DividendsPaidTTM = (resultCashTTM[0].CommonDividendsPaid).ToString();
+                var div = resultCashTTM[0].CommonDividendsPaid / marketCap;
+                var math = Math.Abs((decimal)div);
+                metricSecond.DividendsYieldTTM = math.ToString() + "%";
+                metricSecond.DividendsPaidTTM = (Math.Abs((decimal)resultCashTTM[0].CommonDividendsPaid)).ToString();
 
 
 
