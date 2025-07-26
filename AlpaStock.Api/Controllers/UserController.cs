@@ -95,6 +95,26 @@ namespace AlpaStock.Api.Controllers
                 return BadRequest(result);
             }
         }
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [HttpPost("user/report_issue")]
+        public async Task<IActionResult> ReportIssue(ReportIssueReq req)
+        {
+            var userid = User.Claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Jti)?.Value;
+
+            var result = await _accountService.SendEnquiries(userid, req.Message);
+            if (result.StatusCode == 200)
+            {
+                return Ok(result);
+            }
+            else if (result.StatusCode == 404)
+            {
+                return NotFound(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
 
 
         [HttpPost("user/forgot_password")]

@@ -42,7 +42,10 @@ namespace AlpaStock.Infrastructure.Service.Implementation
             {
                 client.Connect(_configuration["EmailConfiguration:Host"], int.Parse(_configuration["EmailConfiguration:Port"]), true);
                 client.AuthenticationMechanisms.Remove("XOAUTH2");
-                client.Authenticate(_configuration["EmailConfiguration:UserName"], _configuration["EmailConfiguration:Password"]);
+                client.Authenticate(
+                    _configuration["EmailConfiguration:UserName"],
+                    _configuration["EmailConfiguration:Password"]
+                );
                 client.Send(mailMessage);
             }
             catch (Exception ex)

@@ -15,7 +15,7 @@ namespace AlpaStock.Infrastructure.Service.Interface
         Task<ResponseDto<string>> UpdateUser(string email, UpdateUserDto updateUser);
         Task<ResponseDto<string>> DeleteUser(string email);
         Task<ResponseDto<string>> RegisterUser(SignUp signUp, string Role);
-
+        Task<ResponseDto<string>> SendEnquiries(string userId, string UserMessage);
         Task<ResponseDto<LoginResultDto>> LoginUser(SignInModel signIn);
         Task<ResponseDto<PaginatedUser>> GetAllUsersAsync(int pageNumber, int perPageSize, string? sinceDate, string? name, UserFilter filter);
         Task<ResponseDto<UserInfo>> UserInfoAsync(string userId);

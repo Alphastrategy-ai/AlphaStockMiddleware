@@ -4,6 +4,7 @@ using AlpaStock.Core.DTOs.Request.Notification;
 using AlpaStock.Core.DTOs.Response.Auth;
 using AlpaStock.Core.Entities;
 using AlpaStock.Core.Repositories.Interface;
+using AlpaStock.Core.Util;
 using AlpaStock.Infrastructure.Service.Interface;
 using AutoMapper;
 using Google.Apis.Auth;
@@ -401,6 +402,51 @@ namespace AlpaStock.Infrastructure.Service.Implementation
             {
                 _logger.LogError(ex.Message, ex);
                 response.ErrorMessages = new List<string>() { "Error in getting user info" };
+                response.StatusCode = 501;
+                response.DisplayMessage = "Error";
+                return response;
+            }
+        }
+        public async Task<ResponseDto<string>> SendEnquiries(string userId, string UserMessage)
+        {
+            var response = new ResponseDto<string>();
+            try
+            {
+                var fetchUser = await _accountRepo.FindUserByIdFullinfoAsync(userId);
+                if (fetchUser == null)
+                {
+                    response.ErrorMessages = new List<string>() { "Invalid user" };
+                    response.DisplayMessage = "Error";
+                    response.StatusCode = 400;
+                    return response;
+                }
+                string clientEmailHtml = MailConstanst.ClientEnquiryAcknowledgement
+                    .Replace("{{FullName}}", fetchUser?.FirstName + " "+ fetchUser?.LastName)
+                    .Replace("{{Message}}", UserMessage)
+                    .Replace("{{Year}}", DateTime.UtcNow.Year.ToString());
+
+                string adminEmailHtml = MailConstanst.AdminNewEnquiryNotification
+                    .Replace("{{FullName}}", fetchUser?.FirstName + " " + fetchUser?.LastName)
+                    .Replace("{{Email}}",fetchUser.Email)
+                    .Replace("{{Phone}}",fetchUser?.PhoneNumber)
+                    .Replace("{{Message}}", UserMessage);
+
+                var Usermessage = new Message(new string[] { fetchUser.Email }, "Report Issue", clientEmailHtml);
+                _emailServices.SendEmail(Usermessage);
+                var Adminmessage = new Message(new string[] { _configuration["AdminMail"] }, "Report Issue From Customer", adminEmailHtml);
+                _emailServices.SendEmail(Adminmessage);
+
+
+                response.StatusCode = StatusCodes.Status200OK;
+                response.DisplayMessage = "Success";
+                response.Result = "Your report issue received successfully";
+                return response;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message, ex);
+                response.ErrorMessages = new List<string>() { "Error in submitting report issue" };
                 response.StatusCode = 501;
                 response.DisplayMessage = "Error";
                 return response;
