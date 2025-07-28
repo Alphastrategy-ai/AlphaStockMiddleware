@@ -1522,7 +1522,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     return response;
                 }
                 var resultIncome2 = JsonConvert.DeserializeObject<List<IncomeStatementResp>>(makeRequestIncome2.Content);
-                var lastCal = (resultIncome[4].WeightedAverageShsOutDil - resultIncome[0].WeightedAverageShsOutDil);
+                var lastCal = (resultIncome[0].WeightedAverageShsOutDil - resultIncome[4].WeightedAverageShsOutDil);
                 double divide = ((double)lastCal / (double)resultIncome[4].WeightedAverageShsOutDil);
                 double weighted = divide * 100;
                 resp.Add(new Alpha8PillerResp()
