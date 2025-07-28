@@ -1529,7 +1529,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 {
                     header = "Shares Outstanding Decrease (5 yr)",
                     amount = FormatNumber(double.Parse(weighted.ToString()))+"%",
-                    isActive = Compare(resultIncome2[0].WeightedAverageShsOutDil.ToString(), double.Parse(resultIncome[0].WeightedAverageShsOutDil.ToString()), "<")
+                    isActive = Compare(resultIncome[0].WeightedAverageShsOutDil.ToString(), double.Parse(resultIncome[4].WeightedAverageShsOutDil.ToString()), "<")
                 });
 
                 var apiUrlBalanceTtm = _baseUrl + $"stable/balance-sheet-statement-ttm?symbol={symbol}&period={period}&limit=10";

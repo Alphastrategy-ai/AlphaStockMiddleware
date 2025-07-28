@@ -420,15 +420,15 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.StatusCode = 400;
                     return response;
                 }
-                string clientEmailHtml = MailConstanst.ClientEnquiryAcknowledgement
-                    .Replace("{{FullName}}", fetchUser?.FirstName + " "+ fetchUser?.LastName)
+                string clientEmailHtml = MailConstants.ClientEnquiryAcknowledgement
+                    .Replace("{{FullName}}", fetchUser?.FirstName + " " + fetchUser?.LastName)
                     .Replace("{{Message}}", UserMessage)
                     .Replace("{{Year}}", DateTime.UtcNow.Year.ToString());
 
-                string adminEmailHtml = MailConstanst.AdminNewEnquiryNotification
+                string adminEmailHtml = MailConstants.AdminNewEnquiryNotification
                     .Replace("{{FullName}}", fetchUser?.FirstName + " " + fetchUser?.LastName)
-                    .Replace("{{Email}}",fetchUser.Email)
-                    .Replace("{{Phone}}",fetchUser?.PhoneNumber)
+                    .Replace("{{Email}}", fetchUser.Email)
+                    .Replace("{{Phone}}", fetchUser?.PhoneNumber)
                     .Replace("{{Message}}", UserMessage);
 
                 var Usermessage = new Message(new string[] { fetchUser.Email }, "Report Issue", clientEmailHtml);
