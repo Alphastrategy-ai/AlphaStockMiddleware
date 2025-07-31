@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace AlpaStock.Core.DTOs.Response.Auth
+﻿namespace AlpaStock.Core.DTOs.Response.Auth
 {
     public class UserInfo
     {

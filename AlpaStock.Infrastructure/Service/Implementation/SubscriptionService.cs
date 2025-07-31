@@ -46,7 +46,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     {
                         SubscriptionId = AddSubPlan.Id,
                         Category = "Stock Analysis",
-                        CurrentState = "False",
+                        CurrentState = "True",
                         FeatureName = item.Value,
                         ShortName = item.Key
                     });
@@ -56,19 +56,53 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     { "BS", "Balance Sheet" },
                     { "CF", "Cash Flow" },
 
-                };
-
-                foreach (var item in dicFinance)
+                }; foreach (var item in dicFinance)
                 {
                     await _subscriptionFeatureRepo.Add(new SubscriptionFeatures
                     {
                         SubscriptionId = AddSubPlan.Id,
                         Category = "Financial Insight",
-                        CurrentState = "False",
+                        CurrentState = "True",
                         FeatureName = item.Value,
                         ShortName = item.Key
                     });
                 }
+                var Fundamentals = new Dictionary<string, string>
+                {
+                    { "AF", "Alpha Fundamentals" },
+                    { "MY", "My Fundamentals" },
+
+                }; foreach (var item in Fundamentals)
+                {
+                    await _subscriptionFeatureRepo.Add(new SubscriptionFeatures
+                    {
+                        SubscriptionId = AddSubPlan.Id,
+                        Category = "Fundamentals",
+                        CurrentState = "True",
+                        FeatureName = item.Value,
+                        ShortName = item.Key
+                    });
+                }
+                var metrics = new Dictionary<string, string>
+                {
+                    { "ST", "Stock Charts" },
+                    { "SN", "Stock News" },
+                    { "AN", "Annual Reports" },
+
+                };
+
+                foreach (var item in metrics)
+                {
+                    await _subscriptionFeatureRepo.Add(new SubscriptionFeatures
+                    {
+                        SubscriptionId = AddSubPlan.Id,
+                        Category = "Metrics",
+                        CurrentState = "True",
+                        FeatureName = item.Value,
+                        ShortName = item.Key
+                    });
+                }
+               
                 await _subscriptionFeatureRepo.Add(new SubscriptionFeatures
                 {
                     SubscriptionId = AddSubPlan.Id,
@@ -81,10 +115,11 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 {
                     SubscriptionId = AddSubPlan.Id,
                     Category = "Community Management",
-                    CurrentState = "False",
+                    CurrentState = "True",
                     FeatureName = "Community Management",
                     ShortName = "CM"
                 });
+                
                 await _subscriptionFeatureRepo.SaveChanges();
                 response.StatusCode = 200;
                 response.DisplayMessage = "Success";
