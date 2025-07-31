@@ -85,6 +85,15 @@ namespace AlpaStock.Core.Repositories.Implementation
             }
             return findUser;
         }
+        public async Task<ApplicationUser?> FindUserByUserNameAsync(string userName)
+        {
+            var findUser = await _userManager.FindByNameAsync(userName);
+            if (findUser == null)
+            {
+                return null;
+            }
+            return findUser;
+        }
 
         public async Task<ApplicationUser> FindUserByIdAsync(string id)
         {

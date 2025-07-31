@@ -13,6 +13,14 @@ namespace AlpaStock.Api.Extension
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<AlphaContext>()
                     .AddDefaultTokenProviders();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;               
+            });
 
             services.AddDbContext<AlphaContext>(dbContextOptions =>
             {

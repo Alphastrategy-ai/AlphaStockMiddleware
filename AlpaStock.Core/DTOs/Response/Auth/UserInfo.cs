@@ -18,6 +18,8 @@ namespace AlpaStock.Core.DTOs.Response.Auth
         public bool isSuspended { get; set; }
         public string ActiveSubcriptionName { get; set; }
         public DateTime ActiveSubcriptionEndDate { get; set; }
+        public string FreeSubcriptionName { get; set; }
+        public DateTime FreeSubcriptionEndDate { get; set; }
         public string ProfilePicture { get; set; }
         public bool IsEmailConfirmed { get; set; }
         public bool isSubActive { get; set; }

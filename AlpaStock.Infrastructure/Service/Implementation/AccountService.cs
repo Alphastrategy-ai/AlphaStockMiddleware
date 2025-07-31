@@ -61,6 +61,14 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     response.DisplayMessage = "Error";
                     return response;
                 }
+                var checkUserName = await _accountRepo.FindUserByUserNameAsync(signUp.UserName);
+                if (checkUserName != null)
+                {
+                    response.ErrorMessages = new List<string>() { "User with the username already exist" };
+                    response.StatusCode = 400;
+                    response.DisplayMessage = "Error";
+                    return response;
+                }
                 var checkRole = await _accountRepo.RoleExist(Role);
                 if (checkRole == false)
                 {
@@ -346,7 +354,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 if (subActive)
                 {
                     var expiredSubscriptions = await _userSubRepo.GetQueryable()
-                        .Where(us => us.SubscrptionEnd <= DateTime.UtcNow && us.IsActive).ToListAsync();
+                        .Where(us => us.SubscrptionEnd <= DateTime.UtcNow && us.IsActive && us.UserId == userId).ToListAsync();
 
                     foreach (var subscription in expiredSubscriptions)
                     {
@@ -371,6 +379,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     }
 
                 }
+                var currentFreePlanEndDate = await _userSubRepo.GetQueryable().Include(s => s.Subscription).FirstOrDefaultAsync(u => u.SubscriptionId == "314561df-5e86-4269-b97e-d3f55b5d3e99");
                 var result = new UserInfo()
                 {
                     Id = fetchUser.Id,
@@ -387,7 +396,9 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     isSubActive = userSub != null,
                     ProfilePicture = fetchUser.ProfilePicture,
                     Created = fetchUser.Created,
-                    AccessibleModule = accessModule
+                    AccessibleModule = accessModule,
+                    FreeSubcriptionName = "Free",
+                    FreeSubcriptionEndDate = currentFreePlanEndDate.SubscrptionEnd,
 
                 };
 

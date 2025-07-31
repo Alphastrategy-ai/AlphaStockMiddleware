@@ -8,6 +8,7 @@ namespace AlpaStock.Core.Repositories.Interface
 {
     public interface IAccountRepo
     {
+        Task<ApplicationUser?> FindUserByUserNameAsync(string userName);
         Task<ApplicationUser> FindUserByIdFullinfoAsync(string id);
         Task<ApplicationUser> SignUpAsync(ApplicationUser user, string Password);
         Task<PaginatedUser> GetAllRegisteredUserAsync(int pageNumber, int perPageSize, string? sinceDate, string? name, UserFilter filter);
