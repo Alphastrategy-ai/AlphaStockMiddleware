@@ -15,6 +15,7 @@ declare -A secrets=(
   ["Paypal__WebUrl"]="/etc/secrets/Paypal__WebUrl"
   ["WebHook__PayPalCallBackUrl"]="/etc/secrets/WebHook__PayPalCallBackUrl"
   ["WebHook__StripeCallBackUrl"]="/etc/secrets/WebHook__StripeCallBackUrl"
+  ["ConnectionStrings__ProdDb"]="/etc/secrets/ConnectionStrings__ProdDb"
 )
 
 for key in "${!secrets[@]}"; do
