@@ -299,9 +299,6 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                 }
                 var message = new Message(new string[] { createUser.Email }, "Confirm Email Token", $"<p>Your confirm email code is below<p><h6>{GenerateConfirmEmailToken.Token}</h6>");
                 _emailServices.SendEmail(message);
-
-
-                // to be deleted later
                 await _userSubRepo.Add(new UserSubscription()
                 {
                     SubscriptionId = "314561df-5e86-4269-b97e-d3f55b5d3e99",
@@ -309,8 +306,8 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     SubscrptionStart = DateTime.UtcNow,
                     SubscrptionEnd = DateTime.UtcNow.AddDays(7),
                 });
-
-                var generateToken = await _generateJwt.GenerateToken(checkUserExist);
+                await _userSubRepo.SaveChanges();
+                var generateToken = await _generateJwt.GenerateToken(createUser);
                 if (generateToken == null)
                 {
                     response.ErrorMessages = new List<string>() { "Error in generating jwt for user" };
@@ -319,8 +316,8 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     return response;
                 }
 
-                var getUserRole = await _accountRepo.GetUserRoles(checkUserExist);
-                await _userSubRepo.SaveChanges();
+                var getUserRole = await _accountRepo.GetUserRoles(createUser);
+              
                 response.StatusCode = StatusCodes.Status200OK;
                 response.DisplayMessage = "Successfully login";
                 response.Result = new LoginResultDto() { Jwt = generateToken, UserRole = getUserRole };
@@ -379,7 +376,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     }
 
                 }
-                var currentFreePlanEndDate = await _userSubRepo.GetQueryable().Include(s => s.Subscription).FirstOrDefaultAsync(u => u.SubscriptionId == "314561df-5e86-4269-b97e-d3f55b5d3e99");
+                var currentFreePlan = await _userSubRepo.GetQueryable().Include(s => s.Subscription).FirstOrDefaultAsync(u => u.SubscriptionId == "314561df-5e86-4269-b97e-d3f55b5d3e99" && u.UserId == userId);
                 var result = new UserInfo()
                 {
                     Id = fetchUser.Id,
@@ -391,18 +388,15 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     PhoneNumber = fetchUser.PhoneNumber,
                     isSuspended = fetchUser.isSuspended,
                     IsEmailConfirmed = fetchUser.EmailConfirmed,
-                    ActiveSubcriptionName = userSub != null ? userSub.Subscription.Name : null,
-                    ActiveSubcriptionEndDate = userSub != null ? userSub.SubscrptionEnd : default,
+                    ActiveSubcriptionName = userSub != null ? userSub?.Subscription?.Name : null,
+                    ActiveSubcriptionEndDate = userSub != null ? userSub?.SubscrptionEnd : default,
                     isSubActive = userSub != null,
                     ProfilePicture = fetchUser.ProfilePicture,
                     Created = fetchUser.Created,
                     AccessibleModule = accessModule,
                     FreeSubcriptionName = "Free",
-                    FreeSubcriptionEndDate = currentFreePlanEndDate.SubscrptionEnd,
-                    
+                    FreeSubcriptionEndDate = currentFreePlan?.SubscrptionEnd,
                 };
-
-
                 response.StatusCode = StatusCodes.Status200OK;
                 response.DisplayMessage = "Success";
                 response.Result = result;
