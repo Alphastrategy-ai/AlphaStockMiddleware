@@ -399,7 +399,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     AccessibleModule = accessModule,
                     FreeSubcriptionName = "Free",
                     FreeSubcriptionEndDate = currentFreePlanEndDate.SubscrptionEnd,
-
+                    
                 };
 
 
