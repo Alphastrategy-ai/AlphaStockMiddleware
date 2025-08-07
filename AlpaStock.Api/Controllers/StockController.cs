@@ -333,7 +333,7 @@ namespace AlpaStock.Api.Controllers
             }
         }
       
-       // [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("alpha-8-piller-screener")]
         public async Task<IActionResult> AlphaStock8Pillers(string symbol, string period)
         {

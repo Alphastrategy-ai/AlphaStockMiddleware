@@ -1478,7 +1478,7 @@ namespace AlpaStock.Infrastructure.Service.Implementation
                     isActive = Compare("22", (double)avgPe, ">")
                 });
                 var diffIncome = resultIncome[0].NetIncome - resultIncome[4].NetIncome;
-                var percentIncome = (diffIncome/ resultIncome[0].NetIncome) *100;
+                var percentIncome = (diffIncome/ resultIncome[4].NetIncome) *100;
                 resp.Add(new Alpha8PillerResp()
                 {
                     header = "Net Income Growth (5 yr)",
